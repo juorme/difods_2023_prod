@@ -1,0 +1,5 @@
+DRIVER = '{ODBC Driver 17 for SQL Server}'
+SERVER = 'med000008646'
+DATABASE = 'BD_STAGE'
+UID = 'usconsulta'
+PWD = 'consulta'
