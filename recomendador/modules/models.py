@@ -1,28 +1,3 @@
-class RecomendadorPopular:
-
-    MODEL_NAME = 'Popularidad'
-
-    def __init__(self, popularidad_df, items_df=None):
-        self.popularidad_df = popularidad_df
-        self.items_df = items_df
-
-    def get_model_name(self) :
-        return self.MODEL_NAME
-
-    def recommend_items(self, DNI_DOCENTE, items_para_ignorar=[], topn=5, verbose=False):
-        # Recomienda los cursos más populares que el usuario no ha calificado
-        recomendaciones_df = self.popularidad_df[~self.popularidad_df['ID_OFERTA_FORMATIVA'].isin(items_para_ignorar)] \
-                                                                .sort_values('Q', ascending = False) \
-                                                                .head(topn)
-        if verbose :
-            if self.items_df is None :
-                raise Exception(' "items_df" is required in verbose mode')
-
-            recomendaciones_df = recomendaciones_df.merge(self.items_df, how='left',
-                                                            left_on='ID_OFERTA_FORMATIVA',
-                                                            right_on = 'ID_OFERTA_FORMATIVA')
-
-        return recomendaciones_df
 
 
 
@@ -55,7 +30,5 @@ class CFRecommender:
             recommendations_df = recommendations_df.merge(self.items_df, how = 'left', 
                                                           left_on = 'ID_OFERTA_FORMATIVA', 
                                                           right_on = 'ID')
-
-
         return recommendations_df
 
