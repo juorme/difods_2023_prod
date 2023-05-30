@@ -1,4 +1,5 @@
 #Librerias 
+
 import numpy as np 
 import pandas as pd 
 import pyodbc
@@ -14,7 +15,7 @@ path ='D:/difods_2023_prod/Recomendador'
 
 os.chdir(path)
 
-from recomendador.modules.models import RecomendadorPopular
+from models import RecomendadorPopular
 import cfg 
 
 #Credenciales
@@ -60,7 +61,10 @@ query3 = """SELECT ID_OFERTA_FORMATIVA, A.ID_PARTICIPANTE,CUMPLIMIENTO_ACTIVIDAD
 			WHERE CUMPLIMIENTO_ACTIVIDAD = 'COMPLETARON'"""
 curso_participante_df = pd.read_sql_query(query3,conn)
 
-
+## maestro de docentes inscritos en sifods
+# query4 = """SELECT ID,DNI,APELLIDO_PATERNO,APELLIDO_MATERNO,APELLIDO_CASADA,APELLIDO_MATERNO_CASADA,NOMBRES,PAIS_DOMICILIO,DEPARTAMENTO_DOMICILIO,PROVINCIA_DOMICILIO
+# 			FROM [st].[SI_maestro.persona]"""
+# maestro_docentes_df = pd.read_sql_query(query4,conn)
 
 #Cerrar la conexion
 conn.close()
@@ -131,32 +135,5 @@ cf_preds_df
 
 #Dataset de resultados
 df_f = cf_preds_df.melt(id_vars='DNI_DOCENTE' , var_name='ID_OFERTA_FORMATIVA',value_name='PRED_RATING')
-df_f = df_f.reindex(columns=['ID_OFERTA_FORMATIVA','DNI_DOCENTE','PRED_RATING'])
-
-df_f = df_f.head(25118)
 
 
-
-#Credenciales
-conn3 = pyodbc.connect(DRIVER = cfg.DRIVER,
-                         SERVER = cfg.SERVER,
-                         DATABASE = cfg.DATABASE,
-                         UID = cfg.UID,
-                         PWD = cfg.PWD)
-
-cursor = conn3.cursor()
-cursor.fast_executemany = True
-
-#Truncar datos de la tabla ml_recomendacion
-cursor.execute("TRUNCATE TABLE ML_RECOMENDACION")
-conn3.commit()
-
-# Insertar valores
-sql_insert = """INSERT INTO ML_RECOMENDACION VALUES (?,?,?)"""
-val = df_f[['ID_OFERTA_FORMATIVA', 'DNI_DOCENTE', 'PRED_RATING',]].values.tolist()
-#cursor.fast_executemany = True
-cursor.executemany(sql_insert, val)
-
-conn3.commit()
-# Cerrar las conexiones
-conn3.close()
