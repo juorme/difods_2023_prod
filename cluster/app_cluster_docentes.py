@@ -48,7 +48,7 @@ conn = pyodbc.connect(DRIVER = '{ODBC Driver 17 for SQL Server}',
 ## maestro de cursos de la oferta formativa 
 query1 = """SELECT * 
             FROM [dbo].[MON_Transaccional_Preguntas] 
-            WHERE COURSE_ID IN ('5') """
+            WHERE COURSE_ID IN (5,76) """
 
 df = pd.read_sql_query(query1,conn)
 
@@ -113,6 +113,7 @@ cursor.executemany(sql_insert, val)
 conn3.commit()
 # Cerrar las conexiones
 conn3.close()
+
 
 
 
